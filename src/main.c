@@ -6,7 +6,7 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 02:16:33 by fcassand          #+#    #+#             */
-/*   Updated: 2022/05/18 03:30:45 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/05/20 03:59:53 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,11 @@ int	init_info(t_all *info, char **av, int argc)
 	info->die_time = ft_atoi(av[2]);
 	info->eat_time = ft_atoi(av[3]);
 	info->sleep_time = ft_atoi(av[4]);
+	info->fork = malloc(sizeof(pthread_mutex_t) * info->amount);
+	info->philo = malloc(sizeof(t_philo) * info->amount);
+	info->tred = malloc(sizeof(pthread_t) * info->amount);
+	if (!(info->fork) || !(info->philo) || !(info->tred))
+		return (error_message("allocation error", info));
 	return (0);
 }
 
@@ -40,4 +45,7 @@ int	main(int argc, char **argv)
 	info = malloc(sizeof(t_all));
 	if (init_info(info, argv, argc))
 		return (1);
+	if (init_philo(info))
+		return (1);
+	return (0);
 }
