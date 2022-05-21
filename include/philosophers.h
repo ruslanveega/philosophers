@@ -6,7 +6,7 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 02:17:30 by fcassand          #+#    #+#             */
-/*   Updated: 2022/05/20 03:56:20 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/05/21 03:09:18 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ typedef struct	s_philo
 	int	left_fork;
 	int	right_fork;
 	int	times_eat;
+	long long last_eat;
 }				t_philo;
 
 typedef struct	s_all
