@@ -18,13 +18,32 @@
 # include <pthread.h>
 # include <sys/time.h>
 
+typedef struct s_forks
+{
+	pthread_mutex_t	*fork;
+}	t_forks;
+
+typedef struct s_print
+{
+	pthread_mutex_t	m_print;
+}	t_print;
+
 typedef struct	s_philo
 {
-	int	id;
-	int	left_fork;
-	int	right_fork;
-	int	times_eat;
-	long long last_eat;
+	int				id;
+	int				left_fork;
+	int				right_fork;
+	int				times_eat;
+	int				eat_time;
+	int				eat_time;
+	int				die_time;
+	int				sleep_time;
+	long long		last_eat;
+	long long		death_time;
+	long long		start;
+	t_forks			*forks;
+	t_print			*print;
+	struct t_all	*info;
 }				t_philo;
 
 typedef struct	s_all
@@ -34,8 +53,11 @@ typedef struct	s_all
 	int				die_time;
 	int				sleep_time;
 	pthread_t 		*tred;
-	pthread_mutex_t *fork;
-	t_philo 		*philo;
+	int				times_must_eat;
+	long long		start;
+	t_philo			*philo;
+	t_forks			*forks;
+	t_print			*print;
 }				t_all;
 
 int	main(int argc, char **argv);
