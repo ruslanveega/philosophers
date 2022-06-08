@@ -6,11 +6,27 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 03:14:55 by fcassand          #+#    #+#             */
-/*   Updated: 2022/05/18 03:31:29 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/06/08 04:15:05 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+int	error_massage(char *str, t_all *info)
+{
+	printf("ERROR: %s\n", str);
+	if (info)
+		free(info);
+	return (1);
+}
+
+long long	get_timestamp(void)
+{
+	struct timeval	t;
+
+	gettimeofday(&t, NULL);
+	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
+}
 
 int	ft_atoi(const char *str)
 {
