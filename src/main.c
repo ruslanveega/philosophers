@@ -6,7 +6,7 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 02:16:33 by fcassand          #+#    #+#             */
-/*   Updated: 2022/06/08 03:05:42 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/06/11 03:23:07 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,7 @@ int	main(int argc, char **argv)
 		return (error_message("allocation error", NULL));
 	if (init_info(info, argv, argc))
 		return (1);
+	start(info);
+	mutex_destroy(info);
 	return (0);
 }

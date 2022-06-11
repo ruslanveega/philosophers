@@ -6,7 +6,7 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/03 04:15:57 by fcassand          #+#    #+#             */
-/*   Updated: 2022/06/08 04:45:48 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/06/11 04:41:33 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void init_philo(t_all *info)
 	{
 		info->philo[i].id = i + 1;
 		info->philo[i].times_eat = 0;
-		info->philo[i].last_eat = 0;
+		info->philo[i].last_eat = info->start;
 		info->philo[i].right_fork = i;
 		info->philo[i].left_fork = 0;
 		if (i < info->amount - 1)
@@ -58,8 +58,9 @@ int	init_mutex(t_all *info)
 				return (1);
 		if(pthread_mutex_init(&info->print->m_print, NULL))
 				return (1);
+		if (pthread_mutex_init(&info->check_mut, NULL))
+			return (1);
 		return (0);
-
 	}
 	return (error_message("allocation error", info));
 }
@@ -77,6 +78,7 @@ int	init_info(t_all *info, char **av, int argc)
 	info->sleep_time = ft_atoi(av[4]);
 	if (argc == 6)
 		info->times_must_eat = ft_atoi(av[5]);
+	info->is_dead = 0;
 	info->forks = NULL;
 	info->philo = NULL;
 	info->tred = NULL;
