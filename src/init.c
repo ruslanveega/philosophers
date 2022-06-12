@@ -6,7 +6,7 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/03 04:15:57 by fcassand          #+#    #+#             */
-/*   Updated: 2022/06/12 12:41:36 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/06/12 22:26:52 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	init_philo(t_all *info)
 			info->philo[i].left_fork = i + 1;
 		info->philo[i].eat_time = info->eat_time;
 		info->philo[i].die_time = info->die_time;
+		info->philo[i].death_time = info->die_time + info->start;
 		info->philo[i].sleep_time = info->sleep_time;
 		info->philo[i].start = info->start;
 		info->philo[i].m_print = info->m_print;

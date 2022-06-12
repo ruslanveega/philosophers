@@ -6,11 +6,16 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 03:18:27 by fcassand          #+#    #+#             */
-/*   Updated: 2022/06/12 22:00:19 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/06/12 22:23:07 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+int	is_philo_dead(long long c_time, t_all *info, t_philo *philo)
+{
+	if (philo->die_time < time - philo->start)
+}
 
 int	philo_is_eating(t_all *info, t_philo *philo)
 {
@@ -23,8 +28,8 @@ int	philo_is_eating(t_all *info, t_philo *philo)
 	if (print_func(info, philo, "taken a fork"))
 		return (unlock_forks(info, philo, 2));
 	time_stamp = get_timestamp() - philo->start;
-	if ()
-
+	if (is_philo_dead(time_stamp, info, philo))
+		return (unlock_forks(info, philo, 2));
 	if (print_func(info, philo, "eating"))
 		return (unlock_forks(info, philo, 2));
 	if (philos_time(philo->eat_time, info))
