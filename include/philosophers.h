@@ -6,7 +6,7 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 02:17:30 by fcassand          #+#    #+#             */
-/*   Updated: 2022/06/12 12:46:18 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/06/12 22:08:54 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ typedef struct	s_all
 	pthread_mutex_t	m_print;
 	pthread_mutex_t	check_mut;
 	pthread_mutex_t	check_meals;
-}				t_all;
+ }				t_all;
 
 int			main(int argc, char **argv);
 int			ft_atoi(const char *str);
