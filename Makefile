@@ -1,15 +1,13 @@
 NAME	=	philo
 
-SRCS	=	src/main.c	src/utils.c	src/init.c src/philo_life.c
+SRCS	=	src/main.c	src/utils.c	src/init.c src/philo_life.c \
 			src/philo_life_utils.c
 
 OBJ		=	$(SRCS:%.c=%.o)
 
-# LIB		=	libft/libft.a
-
 INCLUDE	=	include/
 
-HEADER	=	philo.h
+HEADER	=	philosophers.h
 
 CC		=	gcc
 
@@ -17,7 +15,6 @@ FLAGS	=	-g -Wall -Wextra -Werror #-fsanitize=thread
 
 RM		= rm -rf
 
-#---------------------------------------------------------------------------------
 RED		=	\033[1;31m
 BLUE	=	\033[1;34m
 YELLOW	=	\033[1;33m
@@ -30,14 +27,9 @@ GRY		=	\033[1;30m
 TURQUOISE =	\033[36;1m
 END		=	\033[0m
 
-
-#---------------------------------------------------------------------------------
 .PHONY:		all	clean	fclean	re	libft
 
 all:		libft $(NAME)
-
-# libft:
-# 			@$(MAKE) -C libft/
 
 $(NAME):	$(OBJ)
 			$(CC) $(FLAGS) $(OBJ) -o $(NAME)
@@ -48,11 +40,9 @@ $(NAME):	$(OBJ)
 
 clean:
 			@$(RM) $(OBJ) $(OBJ_B)
-# @$(MAKE) -C libft/ clean
 			@echo "$(BLUE)\n\tCleaning $(NAME) succeed \n$(END)"
 
 fclean:		clean
-# @$(MAKE) -C libft/ fclean
 			@$(RM) $(NAME) $(NAME_B)
 			@echo "$(BLUE)\tDeleting $(NAME) succeed\n$(END)"
 

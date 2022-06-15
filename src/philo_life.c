@@ -6,15 +6,35 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 03:18:27 by fcassand          #+#    #+#             */
-/*   Updated: 2022/06/12 22:23:07 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/06/15 03:08:37 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	is_philo_dead(long long c_time, t_all *info, t_philo *philo)
+int	is_philo_dead(t_all *info, t_philo *philo)
 {
-	if (philo->die_time < time - philo->start)
+	long long	time_stamp;
+
+	time_stamp = get_timestamp() - philo->start;
+	if (philo->death_time < time_stamp)
+	{
+		pthread_mutex_lock(&info->check_mut);
+		info->stop_flag = 1;
+		pthread_mutex_unlock(&info->check_mut);
+		pthread_mutex_lock(&info->m_print);
+		printf("%7lldms philosopher is %d died\n", \
+		time_stamp, philo->id);
+		return (1);
+	}
+	pthread_mutex_lock(&info->check_mut);
+	if (info->stop_flag)
+	{
+		pthread_mutex_unlock(&info->check_mut);
+		return (1);
+	}
+	pthread_mutex_unlock(&info->check_mut);
+	return (0);
 }
 
 int	philo_is_eating(t_all *info, t_philo *philo)
@@ -27,13 +47,14 @@ int	philo_is_eating(t_all *info, t_philo *philo)
 	pthread_mutex_lock(&info->forks->fork[philo->left_fork]);
 	if (print_func(info, philo, "taken a fork"))
 		return (unlock_forks(info, philo, 2));
-	time_stamp = get_timestamp() - philo->start;
-	if (is_philo_dead(time_stamp, info, philo))
+	if (is_philo_dead(info, philo))
 		return (unlock_forks(info, philo, 2));
 	if (print_func(info, philo, "eating"))
 		return (unlock_forks(info, philo, 2));
 	if (philos_time(philo->eat_time, info))
 		return (unlock_forks(info, philo, 2));
+	time_stamp = get_timestamp() - philo->start;
+	philo->death_time = time_stamp + philo->die_time;
 	unlock_forks(info, philo, 2);
 	if (info->times_must_eat)
 	{
@@ -46,13 +67,13 @@ int	philo_is_eating(t_all *info, t_philo *philo)
 
 int	ruitine(t_all *info, t_philo *philo)
 {
-	prhread_mutex_lock(&info->check_mut);
+	pthread_mutex_lock(&info->check_mut);
 	if (info->stop_flag)
 	{
-		prhread_mutex_unlock(&info->check_mut);
+		pthread_mutex_unlock(&info->check_mut);
 		return (0);
 	}
-	prhread_mutex_unlock(&info->check_mut);
+	pthread_mutex_unlock(&info->check_mut);
 	if (philo_is_eating(info, philo))
 		return (1);
 	if (print_func(info, philo, "sleeping"))
@@ -64,7 +85,7 @@ int	ruitine(t_all *info, t_philo *philo)
 	return (0);
 }
 
-void	philo_life(void *tmp)
+void	*philo_life(void *tmp)
 {
 	t_philo	*philo;
 	t_all	*info;
@@ -91,7 +112,7 @@ void	philo_life(void *tmp)
 	return (NULL);
 }
 
-static int	start(t_all *info)
+int	start(t_all *info)
 {
 	int			id;
 	pthread_t	death;
@@ -103,6 +124,8 @@ static int	start(t_all *info)
 	pthread_join(death, NULL);
 	id = -1;
 	pthread_mutex_unlock(&info->m_print);
+	if (info->amount == 1)
+		pthread_mutex_unlock(&info->forks->fork[0]);
 	while (++id < info->amount)
 		pthread_join(info->tred[id], NULL);
 	return (0);

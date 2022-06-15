@@ -6,17 +6,46 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 03:14:55 by fcassand          #+#    #+#             */
-/*   Updated: 2022/06/12 09:47:21 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/06/15 02:39:19 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
+void	mutex_destroy(t_all *info)
+{
+	int	i;
+
+	i = -1;
+	while (++i < info->amount)
+		if (pthread_mutex_destroy(&info->forks->fork[i]))
+			printf("Error destroy mutex %d.\n", i);
+	pthread_mutex_destroy(&info->m_print);
+	pthread_mutex_destroy(&info->check_mut);
+	pthread_mutex_destroy(&info->check_meals);
+}
+
+void	free_info(t_all *info)
+{
+	if (info->philo)
+		free(info->philo);
+	if (info->forks)
+	{
+		if (info->forks->fork)
+			free(info->forks->fork);
+		free(info->forks);
+	}
+	if (info->tred)
+		free(info->tred);
+	if (info)
+		free(info);
+}
+
 int	error_massage(char *str, t_all *info)
 {
 	printf("ERROR: %s\n", str);
 	if (info)
-		free(info);
+		free_info(info);
 	return (1);
 }
 
