@@ -6,7 +6,7 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/12 09:46:59 by fcassand          #+#    #+#             */
-/*   Updated: 2022/06/15 03:08:28 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/06/16 02:57:00 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	*check_death(void *tmp)
 
 int	print_func(t_all *info, t_philo *philo, char *str)
 {
-	pthread_mutex_lock(&info->check_mut);
 	pthread_mutex_lock(&info->m_print);
+	pthread_mutex_lock(&info->check_mut);
 	if (!info->stop_flag)
 	{
 		pthread_mutex_unlock(&info->check_mut);

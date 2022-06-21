@@ -6,7 +6,7 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/03 04:15:57 by fcassand          #+#    #+#             */
-/*   Updated: 2022/06/15 03:44:59 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/06/16 02:52:43 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	init_philo(t_all *info)
 			info->philo[i].left_fork = i + 1;
 		info->philo[i].eat_time = info->eat_time;
 		info->philo[i].die_time = info->die_time;
-		info->philo[i].death_time = info->die_time + info->start;
+		info->philo[i].death_time = info->die_time;
 		info->philo[i].sleep_time = info->sleep_time;
 		info->philo[i].start = info->start;
 		info->philo[i].forks = info->forks;
@@ -54,7 +54,8 @@ int	init_mutex(t_all *info)
 			return (error_massage("allocation error", info));
 		info->forks = forks;
 		while (i < info->amount)
-			if (pthread_mutex_init(&info->forks->fork[i++], NULL))
+			if (pthread_mutex_init(&info->forks->fork[i], NULL) || \
+			pthread_mutex_init(&info->philo[i++].death_mut, NULL))
 				return (1);
 		if (pthread_mutex_init(&info->m_print, NULL) || \
 		pthread_mutex_init(&info->check_mut, NULL) || \

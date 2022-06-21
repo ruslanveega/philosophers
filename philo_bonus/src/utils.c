@@ -6,40 +6,34 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 03:14:55 by fcassand          #+#    #+#             */
-/*   Updated: 2022/06/16 02:40:55 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/06/21 01:54:12 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philo_b.h"
 
-void	mutex_destroy(t_all *info)
+int	kill_process(t_all *info)
 {
 	int	i;
 
 	i = 0;
 	while (i < info->amount)
-		if (pthread_mutex_destroy(&info->forks->fork[i]) || \
-		pthread_mutex_destroy(&info->philo[i++].death_mut))
-			printf("Error destroy mutex %d.\n", i);
-	pthread_mutex_destroy(&info->m_print);
-	pthread_mutex_destroy(&info->check_mut);
-	pthread_mutex_destroy(&info->check_meals);
+		if (info->pid[i])
+			kill(info->pid[i++], SIGKILL);
+	return (0);
 }
 
 void	free_info(t_all *info)
 {
-	if (info->philo)
-		free(info->philo);
-	if (info->forks)
-	{
-		if (info->forks->fork)
-			free(info->forks->fork);
-		free(info->forks);
-	}
-	if (info->tred)
-		free(info->tred);
 	if (info)
+	{
+		if (info->philo)
+			free(info->philo);
+		if (info->pid)
+			free(info->pid);
 		free(info);
+	}
+	info = NULL;
 }
 
 int	error_massage(char *str, t_all *info)
@@ -48,14 +42,6 @@ int	error_massage(char *str, t_all *info)
 	if (info)
 		free_info(info);
 	return (1);
-}
-
-long long	get_timestamp(void)
-{
-	struct timeval	t;
-
-	gettimeofday(&t, NULL);
-	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
 }
 
 int	ft_atoi(const char *str)

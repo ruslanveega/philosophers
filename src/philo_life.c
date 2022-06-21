@@ -6,7 +6,7 @@
 /*   By: fcassand <fcassand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 03:18:27 by fcassand          #+#    #+#             */
-/*   Updated: 2022/06/15 03:08:37 by fcassand         ###   ########.fr       */
+/*   Updated: 2022/06/16 03:00:05 by fcassand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@ int	is_philo_dead(t_all *info, t_philo *philo)
 	long long	time_stamp;
 
 	time_stamp = get_timestamp() - philo->start;
+	pthread_mutex_lock(&philo->death_mut);
 	if (philo->death_time < time_stamp)
 	{
+		pthread_mutex_unlock(&philo->death_mut);
 		pthread_mutex_lock(&info->check_mut);
 		info->stop_flag = 1;
 		pthread_mutex_unlock(&info->check_mut);
@@ -27,6 +29,7 @@ int	is_philo_dead(t_all *info, t_philo *philo)
 		time_stamp, philo->id);
 		return (1);
 	}
+	pthread_mutex_unlock(&philo->death_mut);
 	pthread_mutex_lock(&info->check_mut);
 	if (info->stop_flag)
 	{
@@ -39,8 +42,6 @@ int	is_philo_dead(t_all *info, t_philo *philo)
 
 int	philo_is_eating(t_all *info, t_philo *philo)
 {
-	long long	time_stamp;
-
 	pthread_mutex_lock(&info->forks->fork[philo->right_fork]);
 	if (print_func(info, philo, "taken a fork"))
 		return (unlock_forks(info, philo, 1));
@@ -53,8 +54,9 @@ int	philo_is_eating(t_all *info, t_philo *philo)
 		return (unlock_forks(info, philo, 2));
 	if (philos_time(philo->eat_time, info))
 		return (unlock_forks(info, philo, 2));
-	time_stamp = get_timestamp() - philo->start;
-	philo->death_time = time_stamp + philo->die_time;
+	pthread_mutex_lock(&philo->death_mut);
+	philo->death_time = get_timestamp() - philo->start + philo->die_time;
+	pthread_mutex_unlock(&philo->death_mut);
 	unlock_forks(info, philo, 2);
 	if (info->times_must_eat)
 	{
@@ -95,7 +97,7 @@ void	*philo_life(void *tmp)
 	if (philo->id % 2 != 0)
 	{
 		print_func(info, philo, "thinking");
-		usleep(50);
+		usleep(philo->eat_time * 990 - 1);
 	}
 	while (1)
 	{
@@ -120,12 +122,12 @@ int	start(t_all *info)
 	id = -1;
 	while (++id < info->amount)
 		pthread_create(&info->tred[id], NULL, &philo_life, &info->philo[id]);
-	pthread_create(&death, NULL, check_death, info);
+	pthread_create(&death, NULL, &check_death, info);
 	pthread_join(death, NULL);
-	id = -1;
-	pthread_mutex_unlock(&info->m_print);
 	if (info->amount == 1)
-		pthread_mutex_unlock(&info->forks->fork[0]);
+		pthread_mutex_unlock(&info->forks->fork[info->philo[0].right_fork]);
+	pthread_mutex_unlock(&info->m_print);
+	id = -1;
 	while (++id < info->amount)
 		pthread_join(info->tred[id], NULL);
 	return (0);
